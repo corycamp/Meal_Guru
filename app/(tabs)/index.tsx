@@ -1,98 +1,129 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, Button, Image, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import {ImageManipulator, SaveFormat} from 'expo-image-manipulator';
+import { Camera, CameraView } from 'expo-camera';
+import {readAsStringAsync} from 'expo-file-system/legacy'
+import data from '../../constants/example.json'
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const cameraRef = useRef<any>(null);
+    const [hasPermission, setHasPermission] = useState<boolean|null>(null);
+    const [isCameraReady, setIsCameraReady] = useState<boolean>(false);
+    const [loading, setLoading] = useState(false);
+    const [result, setResult] = useState<any>(null);
+    const [photoUri, setPhotoUri] = useState(null);
+  
+    useEffect(() => {
+      (async () => {
+        const { status } = await Camera.requestCameraPermissionsAsync();
+        setHasPermission(status === 'granted');
+      })();
+    }, []);
+  
+    if (hasPermission === null) return <View style={styles.center}><Text>Requesting camera permission...</Text></View>;
+    if (hasPermission === false) return <View style={styles.center}><Text>No access to camera.</Text></View>;
+  
+    const takePictureAndSend = async () => {
+      if (!cameraRef.current) return;
+      setLoading(true);
+      try {
+        const photo = await cameraRef.current.takePictureAsync({ base64: false, quality: 0.7 });
+        setPhotoUri(photo.uri);
+  
+        // Resize/flatten to reduce upload size
+        const manipResult = (await ImageManipulator.manipulate(photo.uri).renderAsync()).saveAsync({base64:true, format:SaveFormat.JPEG});
+  
+        const base64 = (await manipResult).base64
+        console.log("HERE")
+  
+        // const resp = await fetch('http://YOUR_SERVER_IP:3000/generate-meals', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify({ image_base64: base64 }),
+        // });
+  
+        // if (!resp.ok) {
+        //   const txt = await resp.text();
+        //   throw new Error(txt || 'Server error');
+        // }
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+        const resp = data;
+        console.log(resp)
+        // const json = await resp.json();
+        setResult(resp);
+      } catch (err:any) {
+        console.error(err);
+        Alert.alert('Error', err.message || 'Something went wrong');
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    return (
+      <View style={styles.container}>
+        <View style={styles.cameraContainer}>
+          <CameraView
+            ref={cameraRef}
+            style={styles.camera}
+            onCameraReady={() => setIsCameraReady(true)}
+            ratio="16:9"
+          />
+        </View>
+  
+        <View style={styles.controls}>
+          <Button title={loading ? 'Working...' : 'Take picture & get meal ideas'} onPress={takePictureAndSend} disabled={!isCameraReady || loading} />
+        </View>
+  
+        {photoUri ? (
+          <View style={styles.previewContainer}>
+            <Text style={{fontWeight:'bold'}}>Last photo:</Text>
+            <Image source={{ uri: photoUri }} style={styles.preview} />
+          </View>
+        ) : null}
+  
+        {loading ? <ActivityIndicator style={{marginTop:12}} size="large" /> : null}
+  
+        {result ? (
+          <ScrollView style={styles.results}>
+            <Text style={styles.heading}>Detected ingredient: {result.ingredientName}</Text>
+            {result.meals.map((meal:any, idx:number) => (
+              <View key={idx} style={styles.mealCard}>
+                <Text style={styles.mealTitle}>{idx + 1}. {meal.title}</Text>
+                <ScrollView horizontal>
+                  {meal.images.map((uri:string, i:number) => (
+                    <Image key={i} source={{ uri }} style={styles.mealImage} />
+                  ))}
+                </ScrollView>
+                <Text style={styles.sub}>Ingredients:</Text>
+                {meal.ingredients.map((ing:string, i:number) => <Text key={i}>• {ing}</Text>)}
+                <Text style={styles.sub}>Steps:</Text>
+                {meal.steps.map((s:string, i:number) => <Text key={i}>{i+1}. {s}</Text>)}
+                <Text style={styles.sub}>Videos:</Text>
+                {meal.videos.map((v:string, i:number) => (
+                  <TouchableOpacity key={i} onPress={() => { /* open youtube link */ }}>
+                    <Text style={{color:'blue'}}>{v}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            ))}
+          </ScrollView>
+        ) : null}
+      </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+  container: { flex: 1, paddingTop: 40 },
+  cameraContainer: { flex: 0.45, overflow: 'hidden' },
+  camera: { flex: 1 },
+  controls: { padding: 12 },
+  previewContainer: { padding: 12, alignItems: 'center' },
+  preview: { width: 200, height: 120, borderRadius: 8 },
+  results: { flex: 1, padding: 12 },
+  heading: { fontSize: 18, fontWeight: '700', marginBottom: 8 },
+  mealCard: { marginBottom: 18, padding: 10, borderRadius: 8, backgroundColor: '#f5f5f5' },
+  mealTitle: { fontSize: 16, fontWeight: '700' },
+  mealImage: { width: 120, height: 80, marginRight: 8, borderRadius: 6 },
+  sub: { marginTop: 8, fontWeight: '600' },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' }
 });

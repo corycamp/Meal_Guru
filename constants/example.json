@@ -1,0 +1,90 @@
+{
+  "ingredientName": "broccoli",
+  "meals": [
+    {
+      "title": "Broccoli Stir-Fry with Garlic Sauce",
+      "ingredients": [
+        "2 cups broccoli florets",
+        "1 tbsp soy sauce",
+        "2 cloves garlic, minced",
+        "1 tbsp sesame oil",
+        "1 tsp cornstarch",
+        "1/4 cup water",
+        "Salt and pepper to taste"
+      ],
+      "steps": [
+        "Blanch broccoli in boiling water for 1 minute and drain.",
+        "Mix soy sauce, cornstarch, and water in a small bowl to make a sauce.",
+        "Heat sesame oil in a pan and sauté garlic until fragrant.",
+        "Add broccoli and stir-fry for 2 minutes.",
+        "Pour in sauce mixture and cook until thickened.",
+        "Season with salt and pepper, then serve hot over rice."
+      ],
+      "images": [
+        "https://oaidalleapiprodscus.blob.core.windows.net/private/image/meal1a.png",
+        "https://oaidalleapiprodscus.blob.core.windows.net/private/image/meal1b.png",
+        "https://oaidalleapiprodscus.blob.core.windows.net/private/image/meal1c.png"
+      ],
+      "videos": [
+        "https://www.youtube.com/watch?v=GQyWIur03aw",
+        "https://www.youtube.com/watch?v=Gk6vN4bVv7o"
+      ]
+    },
+    {
+      "title": "Creamy Broccoli Soup",
+      "ingredients": [
+        "3 cups broccoli florets",
+        "1 small onion, chopped",
+        "2 cloves garlic, minced",
+        "2 cups vegetable broth",
+        "1 cup milk or cream",
+        "2 tbsp butter",
+        "Salt and pepper to taste"
+      ],
+      "steps": [
+        "Sauté onions and garlic in butter until soft.",
+        "Add broccoli and vegetable broth; bring to a boil.",
+        "Simmer until broccoli is tender.",
+        "Blend the soup until smooth.",
+        "Stir in milk or cream and reheat gently.",
+        "Season with salt and pepper and serve."
+      ],
+      "images": [
+        "https://oaidalleapiprodscus.blob.core.windows.net/private/image/meal2a.png",
+        "https://oaidalleapiprodscus.blob.core.windows.net/private/image/meal2b.png",
+        "https://oaidalleapiprodscus.blob.core.windows.net/private/image/meal2c.png"
+      ],
+      "videos": [
+        "https://www.youtube.com/watch?v=3zQ3NjM3D3A"
+      ]
+    },
+    {
+      "title": "Broccoli and Cheddar Quiche",
+      "ingredients": [
+        "1 pie crust",
+        "1 cup broccoli florets, chopped",
+        "1 cup shredded cheddar cheese",
+        "3 eggs",
+        "1 cup milk",
+        "Salt and pepper to taste"
+      ],
+      "steps": [
+        "Preheat oven to 375°F (190°C).",
+        "Whisk eggs and milk in a bowl.",
+        "Spread broccoli and cheese evenly over crust.",
+        "Pour egg mixture over top.",
+        "Bake 35–40 minutes until golden and set.",
+        "Cool slightly before slicing."
+      ],
+      "images": [
+        "https://oaidalleapiprodscus.blob.core.windows.net/private/image/meal3a.png",
+        "https://oaidalleapiprodscus.blob.core.windows.net/private/image/meal3b.png",
+        "https://oaidalleapiprodscus.blob.core.windows.net/private/image/meal3c.png"
+      ],
+      "videos": [
+        "https://www.youtube.com/watch?v=cIG1VtQdRr8",
+        "https://www.youtube.com/watch?v=6jFQGkHqBgQ"
+      ]
+    }
+  ]
+}
