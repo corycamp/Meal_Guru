@@ -1,12 +1,19 @@
-import { View, Text, Button } from "react-native";
+import { styles } from "@/components/ui/customStyles";
+import { View } from "react-native";
+import Icon from "react-native-vector-icons/AntDesign";
 
 
 export default function ChoiceScreen({route, navigation}:any){
-    console.log(route.params)
+    const data = route.params["data"];
+    console.log("data", data);
     return(
-        <View>
-            <Text>Choice view</Text>
-            <Button title="Go back" onPress={()=>navigation.goBack()}/>
+        <View style={styles.mainContainer}>
+            <View style={styles.choicesBackButtonContainer}>
+                <Icon name="arrow-left" size={25} color="#000" onPress={() => navigation.navigate('Home')}/>
+            </View>
+            <View style={styles.choicesContainer}>
+                
+            </View>
         </View>
     )
 }

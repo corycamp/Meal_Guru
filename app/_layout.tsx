@@ -1,17 +1,14 @@
 import {
   DarkTheme,
   DefaultTheme,
-  NavigationContainer,
-  ThemeProvider,
+  ThemeProvider
 } from "@react-navigation/native";
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "./screens/Home";
 import ChoiceScreen from "./screens/Choice";
+import HomeScreen from "./screens/Home";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -26,7 +23,7 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen name="Home" options={{headerShown:false}} component={HomeScreen}/>
-          <Stack.Screen name="Choice" component={ChoiceScreen}/>
+          <Stack.Screen name="Choice" options={{headerShown:false}} component={ChoiceScreen}/>
         </Stack.Navigator>
     </ThemeProvider>
   );

@@ -1,7 +1,8 @@
-import { Camera, CameraView, useCameraPermissions } from "expo-camera";
+import { styles } from "@/components/ui/customStyles";
+import { CameraView, useCameraPermissions } from "expo-camera";
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import React, { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, Button, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Button, Pressable, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 import data from "../../constants/example.json";
 
@@ -36,7 +37,6 @@ export default function HomeScreen({navigation}:any) {
       ).saveAsync({ base64: true, format: SaveFormat.JPEG });
 
       const base64 = (await manipResult).base64;
-      console.log("HERE");
 
       // const resp = await fetch('http://YOUR_SERVER_IP:3000/generate-meals', {
       //   method: 'POST',
@@ -107,16 +107,3 @@ export default function HomeScreen({navigation}:any) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  mainContainer: { flex: 1, paddingTop: 20, backgroundColor:"rgba(250, 244, 234, 1)", top:35 },
-  container:{display:"flex", height:"90%", alignItems:"center", justifyContent:"space-evenly"},
-  instructionBubble:{flexDirection:"column", borderRadius:25,alignItems:"center", justifyContent:"center", backgroundColor:"white", width:300, height:80},
-  heading: { fontSize: 25, fontWeight: "700", marginBottom: 8},
-  primaryText:{fontSize: 20},
-  camera: { backgroundColor:"black" },
-  secondaryText:{fontSize:18, color:"rgba(142, 117, 70, 1)"},
-  cameraContainer: { backgroundColor:"blue", overflow: "hidden", width:350, height:350, marginBottom: 60},
-  cameraIconContainer:{backgroundColor:"orange", width:60, height:60, borderRadius:100, alignItems:"center", justifyContent:"center"},
-  cameraComponentContainer:{alignItems:"center"},
-});
